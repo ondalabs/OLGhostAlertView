@@ -8,8 +8,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "OLGhostAlertView.h"
 
-#define HORIZONTAL_MARGIN 18.0
-#define VERTICAL_MARGIN 14.0
+#define HORIZONTAL_PADDING 18.0
+#define VERTICAL_PADDING 14.0
 #define TITLE_FONT_SIZE 17
 #define MESSAGE_FONT_SIZE 15
 
@@ -46,7 +46,7 @@
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
         self.alpha = 0;
         
-        _title = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_MARGIN, VERTICAL_MARGIN, 0, 0)];
+        _title = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
         _title.backgroundColor = [UIColor clearColor];
         _title.textColor = [UIColor whiteColor];
         _title.textAlignment = UITextAlignmentCenter;
@@ -56,15 +56,13 @@
         
         [self addSubview:_title];
         
-        _message = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_MARGIN, 0, 0, 0)];
+        _message = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, 0, 0, 0)];
         _message.backgroundColor = [UIColor clearColor];
         _message.textColor = [UIColor whiteColor];
         _message.textAlignment = UITextAlignmentCenter;
         _message.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
         _message.numberOfLines = 0;
         _message.lineBreakMode = UILineBreakModeWordWrap;
-        
-        _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didRotate:)
@@ -96,17 +94,22 @@
     CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
     
     CGFloat maxWidth;
-    CGFloat totalWidth;
+    CGFloat totalLabelWidth;
     CGFloat totalHeight;
     
+    _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if (UIDeviceOrientationIsPortrait(self.interfaceOrientation)) {
-            maxWidth = 280 - (HORIZONTAL_MARGIN * 2);
+        NSLog(@"iPhone");
+        if (UIDeviceOrientationIsPortrait(_interfaceOrientation)) {
+            NSLog(@"portrait");
+            maxWidth = 280 - (HORIZONTAL_PADDING * 2);
         } else {
-            maxWidth = 420 - (HORIZONTAL_MARGIN * 2);
+            NSLog(@"landscape");
+            maxWidth = 420 - (HORIZONTAL_PADDING * 2);
         }
     } else {
-        maxWidth = 520 - (HORIZONTAL_MARGIN * 2);
+        maxWidth = 520 - (HORIZONTAL_PADDING * 2);
     }
     
     CGSize constrainedSize;
@@ -119,30 +122,32 @@
     if (message) {
         messageSize = [message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
         
-        totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_MARGIN * 2.5);
+        totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
     } else {
-        totalHeight = titleSize.height + floorf(VERTICAL_MARGIN * 2);
+        totalHeight = titleSize.height + floorf(VERTICAL_PADDING * 2);
     }
     
     if (titleSize.width == maxWidth || messageSize.width == maxWidth) {
-        totalWidth = maxWidth;
+        totalLabelWidth = maxWidth;
     } else if (messageSize.width > titleSize.width) {
-        totalWidth = messageSize.width;
+        totalLabelWidth = messageSize.width;
     } else {
-        totalWidth = titleSize.width;
+        totalLabelWidth = titleSize.width;
     }
+    
+    CGFloat totalWidth = totalLabelWidth + (HORIZONTAL_PADDING * 2);
     
     CGFloat xPosition = floorf((screenRect.size.width / 2) - (totalWidth / 2));
     
-    self = [self initWithFrame:CGRectMake(xPosition, screenRect.size.height + 20, totalWidth + (HORIZONTAL_MARGIN * 2), totalHeight)];
+    self = [self initWithFrame:CGRectMake(xPosition, screenRect.size.height + 20, totalWidth, totalHeight)];
     
     if (self) {
         _title.text = title;
-        _title.frame = CGRectMake(_title.frame.origin.x, _title.frame.origin.y, totalWidth, titleSize.height);
+        _title.frame = CGRectMake(_title.frame.origin.x, _title.frame.origin.y, totalLabelWidth, titleSize.height);
         
         if (message) {
             _message.text = message;
-            _message.frame = CGRectMake(_message.frame.origin.x, titleSize.height + floorf(VERTICAL_MARGIN * 1.5), totalWidth, messageSize.height);
+            _message.frame = CGRectMake(_message.frame.origin.x, titleSize.height + floorf(VERTICAL_PADDING * 1.5), totalLabelWidth, messageSize.height);
             
             [self addSubview:_message];
         }
@@ -187,11 +192,19 @@
     } else {
         [window.rootViewController.view addSubview:self];
     }
-//    [[[[UIApplication sharedApplication] windows] lastObject] addSubview:self];
+    //    [[[[UIApplication sharedApplication] windows] lastObject] addSubview:self];
+    
+    CGFloat bottomMargin;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        bottomMargin = 25;
+    } else {
+        bottomMargin = 50;
+    }
     
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
-        self.frame = CGRectMake(self.frame.origin.x, fullscreenRect.size.height - self.frame.size.height - 50, self.frame.size.width, self.frame.size.height);
+        self.frame = CGRectMake(self.frame.origin.x, fullscreenRect.size.height - self.frame.size.height - bottomMargin, self.frame.size.width, self.frame.size.height);
     } completion:^(BOOL finished){
         [NSTimer scheduledTimerWithTimeInterval:self.timeout target:self selector:@selector(hide) userInfo:nil repeats:NO];
     }];
