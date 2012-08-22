@@ -86,7 +86,7 @@
     return self;
 }
 
-- (id)initWithTitle:(NSString *)title message:(NSString *)message timeout:(NSTimeInterval)timeout dismissable:(BOOL)dismissable
+- (id)initWithTitle:(NSString *)title message:(NSString *)message timeout:(NSTimeInterval)timeout dismissible:(BOOL)dismissible
 {
     // title cannot be nil. message can be nil.
     if (!title) {
@@ -150,7 +150,7 @@
         
         _timeout = timeout;
         
-        if (dismissable) {
+        if (dismissible) {
             _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
             
             [self addGestureRecognizer:_dismissTap];
@@ -160,16 +160,16 @@
     return self;
 }
 
-- (id)initWithMessage:(NSString *)message
+- (id)initWithTitle:(NSString *)title message:(NSString *)message
 {
-    self = [self initWithTitle:message message:nil timeout:4 dismissable:YES];
+    self = [self initWithTitle:title message:message timeout:6 dismissible:YES];
     
     return self;
 }
 
-- (id)initWithTitle:(NSString *)title message:(NSString *)message
+- (id)initWithTitle:(NSString *)title
 {
-    self = [self initWithTitle:title message:message timeout:6 dismissable:YES];
+    self = [self initWithTitle:title message:nil timeout:4 dismissible:YES];
     
     return self;
 }
@@ -182,7 +182,7 @@
     
     id appDelegate = [[UIApplication sharedApplication] delegate];
     UIWindow *window = [appDelegate window];
-
+    
     if (window.rootViewController.presentedViewController) {
         [window.rootViewController.presentedViewController.view addSubview:self];
     } else {
@@ -212,7 +212,7 @@
 - (void)didRotate:(NSNotification *)notification
 {
     self.interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
-
+    
     [self didChangeScreenBounds];
 }
 
