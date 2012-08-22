@@ -1,9 +1,8 @@
 //
 //  OLGhostAlertView.m
-//  MMT
 //
-//  Created by Radu Dutzan on 7/7/12.
-//  Copyright (c) 2012 Onda. All rights reserved.
+//  Originally created by Radu Dutzan.
+//  (c) 2012 Onda.
 //
 
 #import <QuartzCore/QuartzCore.h>
