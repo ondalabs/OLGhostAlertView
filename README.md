@@ -60,7 +60,7 @@ It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes def
 
 It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `message` (`nil`) `timeout` (`4` seconds) and `dismissible` (`YES`). 
 
-    - (id)initWithTitle:(NSString *)message;
+    - (id)initWithTitle:(NSString *)title;
 
 You're welcome, lazy people.
 
