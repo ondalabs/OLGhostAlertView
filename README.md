@@ -1,7 +1,7 @@
 OLGhostAlertView
 ================
 
-Temporary and unobtrusive translucent alert view for iPhone and iPad. [It looks like this.](http://cl.ly/Iuao)
+Temporary and unobtrusive translucent alert view for iPhone and iPad. Here's what it looks like: [iPad](http://cl.ly/Iuao) / [iPhone](http://cl.ly/IvD7)
 
 
 Details
