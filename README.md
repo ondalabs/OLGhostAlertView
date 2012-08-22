@@ -15,14 +15,16 @@ OLGhostAlertView can have a title and an optional message, in a way similar to U
 Usage
 ---------------
 
-First, copy the files into your project. Then, import the header file like so:
+OLGhostAlertView requires that you include the QuartzCore.framework in your project. Once you have done that, add the OLGhostAlertView files to your project and import the header in the file where you'll be using it, like so:
 
     #import "OLGhostAlertView.h"
 
 After that, here's how you present an OLGhostAlertView:
 
-    OLGhostAlertView.h *ghastly = [[OLGhostAlertView alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
+    OLGhostAlertView *ghastly = [[OLGhostAlertView alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
     [ghastly show];
+
+Just like with UIAlertView, the dismissal of the view is handled by the view itself, so there's no need to call anything else.
 
 There are three convenience methods to `init` OLGhostAlertView:
 
@@ -49,18 +51,30 @@ _dismissible_
 
 ### initWithTitle:message:
 
-It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `timeout` (6 seconds) and `dismissible` (`YES`). 
+It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `timeout` (`6` seconds) and `dismissible` (`YES`). 
 
     - (id)initWithTitle:(NSString *)title message:(NSString *)message;
 
 
 ### initWithTitle:
 
-It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `message` (`nil`) `timeout` (4 seconds) and `dismissible` (`YES`). 
+It's equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `message` (`nil`) `timeout` (`4` seconds) and `dismissible` (`YES`). 
 
     - (id)initWithTitle:(NSString *)message;
 
 You're welcome, lazy people.
+
+
+Known Issues
+---------------
+
+Here are some current limitations in OLGhostAlertView:
+
+ - The view should be added as a subview of the key window, but it's not
+ - Accounting for keyboard height is only supported on iPad
+ - Adding an OLGhostAlertView while displaying a keyboard will cause it to be placed under the keyboard
+ 
+You can find an up-to-date list with full descriptions and discussion at [the Issues page](https://github.com/ondalabs/OLGhostAlertView/issues).
 
 
 License
