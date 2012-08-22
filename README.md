@@ -17,11 +17,11 @@ Usage
 
 First, copy the files into your project. Then, import the header file like so:
 
->     #import "OLGhostAlertView.h"
+    #import "OLGhostAlertView.h"
 
 After that, here's how you present an OLGhostAlertView:
 
->     OLGhostAlertView.h *ghastly = [[OLGhostAlertView.h alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
+    OLGhostAlertView.h *ghastly = [[OLGhostAlertView.h alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
     [ghastly show];
 
 There are three convenience methods to `init` OLGhostAlertView:
