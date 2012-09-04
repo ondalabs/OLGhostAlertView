@@ -91,13 +91,13 @@
         return self;
     }
     
-    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
+    _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
     
     CGFloat maxWidth;
     CGFloat totalLabelWidth;
     CGFloat totalHeight;
     
-    _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         NSLog(@"iPhone");
