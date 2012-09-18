@@ -100,12 +100,9 @@
     CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        NSLog(@"iPhone");
         if (UIDeviceOrientationIsPortrait(_interfaceOrientation)) {
-            NSLog(@"portrait");
             maxWidth = 280 - (HORIZONTAL_PADDING * 2);
         } else {
-            NSLog(@"landscape");
             maxWidth = 420 - (HORIZONTAL_PADDING * 2);
         }
     } else {
