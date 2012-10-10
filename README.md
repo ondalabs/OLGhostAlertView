@@ -70,9 +70,9 @@ Known Issues
 
 Here are some current limitations in OLGhostAlertView:
 
- - The view should be added as a subview of the key window, but it's not
- - Accounting for keyboard height is only supported on iPad
- - Adding an OLGhostAlertView while displaying a keyboard will cause it to be placed under the keyboard
+ - The view should be added as a subview of the key window, but it's not ([#1](https://github.com/ondalabs/OLGhostAlertView/issues/1))
+ - Adding an OLGhostAlertView while displaying a keyboard will cause it to be placed under the keyboard ([#3](https://github.com/ondalabs/OLGhostAlertView/issues/3))  
+If you need this fixed, refer to leberwurstsaft's [comment on the issue](https://github.com/ondalabs/OLGhostAlertView/issues/3#issuecomment-9201846).
  
 You can find an up-to-date list with full descriptions and discussion at [the Issues page](https://github.com/ondalabs/OLGhostAlertView/issues).
 
