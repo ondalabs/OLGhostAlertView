@@ -58,7 +58,7 @@
         _title.font = [UIFont boldSystemFontOfSize:TITLE_FONT_SIZE];
         _title.numberOfLines = 0;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-        _title.textAlignment = UILineBreakModeWordWrap;
+        _title.lineBreakMode = UILineBreakModeWordWrap;
 #else
         _title.lineBreakMode = NSLineBreakByWordWrapping;
 #endif
@@ -76,7 +76,7 @@
         _message.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
         _message.numberOfLines = 0;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-        _message.textAlignment = UILineBreakModeWordWrap;
+        _message.lineBreakMode = UILineBreakModeWordWrap;
 #else
         _message.lineBreakMode = NSLineBreakByWordWrapping;
 #endif
