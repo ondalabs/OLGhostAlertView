@@ -21,6 +21,7 @@
 @property NSTimeInterval timeout;
 @property UIInterfaceOrientation interfaceOrientation;
 @property BOOL isShowingKeyboard;
+@property CGFloat keyboardHeight;
 
 @end
 
@@ -49,20 +50,36 @@
         _title = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
         _title.backgroundColor = [UIColor clearColor];
         _title.textColor = [UIColor whiteColor];
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
         _title.textAlignment = UITextAlignmentCenter;
+#else
+        _title.textAlignment = NSTextAlignmentCenter;
+#endif
         _title.font = [UIFont boldSystemFontOfSize:TITLE_FONT_SIZE];
         _title.numberOfLines = 0;
-        _title.lineBreakMode = UILineBreakModeWordWrap;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+        _title.textAlignment = UILineBreakModeWordWrap;
+#else
+        _title.lineBreakMode = NSLineBreakByWordWrapping;
+#endif
         
         [self addSubview:_title];
         
         _message = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, 0, 0, 0)];
         _message.backgroundColor = [UIColor clearColor];
         _message.textColor = [UIColor whiteColor];
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
         _message.textAlignment = UITextAlignmentCenter;
+#else
+        _message.textAlignment = NSTextAlignmentCenter;
+#endif
         _message.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
         _message.numberOfLines = 0;
-        _message.lineBreakMode = UILineBreakModeWordWrap;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+        _message.textAlignment = UILineBreakModeWordWrap;
+#else
+        _message.lineBreakMode = NSLineBreakByWordWrapping;
+#endif
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didRotate:)
@@ -70,12 +87,12 @@
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillShow)
+                                                 selector:@selector(keyboardWillShow:)
                                                      name:UIKeyboardWillShowNotification
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillHide)
+                                                 selector:@selector(keyboardWillHide:)
                                                      name:UIKeyboardWillHideNotification
                                                    object:nil];
         
@@ -225,14 +242,18 @@
     [self didChangeScreenBounds];
 }
 
-- (void)keyboardWillShow
+- (void)keyboardWillShow:(NSNotification*)notification
 {
+    NSDictionary *keyboardInfo = [notification userInfo];
+    CGSize keyboardSize = [[keyboardInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
     self.isShowingKeyboard = YES;
+    self.keyboardHeight = keyboardSize.height;
     
     [self didChangeScreenBounds];
 }
 
-- (void)keyboardWillHide
+- (void)keyboardWillHide:(NSNotification*)notification
 {
     self.isShowingKeyboard = NO;
     
@@ -247,15 +268,8 @@
     CGFloat screenHeight;
     
     if (self.isShowingKeyboard) {
-        int keyboardHeight;
+        screenHeight = screenRect.size.height - self.keyboardHeight;
         
-        if (UIDeviceOrientationIsLandscape(self.interfaceOrientation)) {
-            keyboardHeight = 352;
-        } else {
-            keyboardHeight = 264;
-        }
-        
-        screenHeight = screenRect.size.height - keyboardHeight;
     } else {
         screenHeight = screenRect.size.height;
     }
