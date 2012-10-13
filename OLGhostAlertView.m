@@ -131,7 +131,7 @@
     constrainedSize.height = MAXFLOAT;
     
     CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
-    CGSize messageSize;
+    CGSize messageSize = CGSizeZero;
     
     if (message) {
         messageSize = [message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
@@ -198,8 +198,7 @@
 {
     CGRect fullscreenRect = [self getScreenBoundsForCurrentOrientation];
     
-    id appDelegate = [[UIApplication sharedApplication] delegate];
-    UIWindow *window = [appDelegate window];
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     
     if (window.rootViewController.presentedViewController) {
         [window.rootViewController.presentedViewController.view addSubview:self];
@@ -220,7 +219,7 @@
         self.alpha = 1;
         self.frame = CGRectMake(self.frame.origin.x, fullscreenRect.size.height - self.frame.size.height - bottomMargin, self.frame.size.width, self.frame.size.height);
     } completion:^(BOOL finished){
-        [NSTimer scheduledTimerWithTimeInterval:self.timeout target:self selector:@selector(hide) userInfo:nil repeats:NO];
+        [self performSelector:@selector(hide) afterDelay:self.timeout];
     }];
 }
 
