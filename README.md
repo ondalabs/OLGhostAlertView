@@ -24,7 +24,7 @@ After that, here's how you present an OLGhostAlertView:
     OLGhostAlertView *ghastly = [[OLGhostAlertView alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
     [ghastly show];
 
-Just like with UIAlertView, the dismissal of the view is handled by the view itself, so there's no need to call anything else.
+Just like with UIAlertView, the dismissal of the view is handled by the view itself, so there's no need to call anything else. If you do want to dismiss it manually, just call `hide` on the instance.
 
 There are three convenience methods to `init` OLGhostAlertView:
 
