@@ -219,7 +219,7 @@
         self.alpha = 1;
         self.frame = CGRectMake(self.frame.origin.x, fullscreenRect.size.height - self.frame.size.height - bottomMargin, self.frame.size.width, self.frame.size.height);
     } completion:^(BOOL finished){
-        [self performSelector:@selector(hide) afterDelay:self.timeout];
+        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
     }];
 }
 
