@@ -77,12 +77,6 @@ If you need this fixed, refer to leberwurstsaft's [comment on the issue](https:/
 You can find an up-to-date list with full descriptions and discussion at [the Issues page](https://github.com/ondalabs/OLGhostAlertView/issues).
 
 
-License
----------------
-
-Do whatever you want with this. If you like it, great! Let us know [on Twitter](http://twitter.com/onda_labs).
-
-
 Help us make this better
 ---------------
 
