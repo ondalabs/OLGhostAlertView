@@ -2,6 +2,7 @@ Pod::Spec.new do |s|
   s.name     = 'OLGhostAlertView'
   s.version  = '1.0'
   s.license  = 'Public Domain'
+  s.platform = :ios
   s.summary  = 'Temporary and unobtrusive translucent alert view for iPhone and iPad.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
   s.authors  = { 'Radu Dutzan' => 'radu@ondalabs.com'}
