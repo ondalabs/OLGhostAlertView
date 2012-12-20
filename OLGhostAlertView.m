@@ -188,13 +188,22 @@
     CGRect fullscreenRect = [self getScreenBoundsForCurrentOrientation];
     
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    UIView *parentView;
     
     if (window.rootViewController.presentedViewController) {
-        [window.rootViewController.presentedViewController.view addSubview:self];
+        parentView = window.rootViewController.presentedViewController.view;
     } else {
-        [window.rootViewController.view addSubview:self];
+        parentView = window.rootViewController.view;
     }
-    //    [[[[UIApplication sharedApplication] windows] lastObject] addSubview:self];
+    
+    for (UIView *subView in [parentView subviews]) {
+        if ([subView isKindOfClass:[OLGhostAlertView class]]) {
+            OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subView;
+            [otherOLGAV hide];
+        }
+    }
+    
+    [parentView addSubview:self];
     
     CGFloat bottomMargin;
     
