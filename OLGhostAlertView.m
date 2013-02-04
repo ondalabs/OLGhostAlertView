@@ -25,6 +25,7 @@
 @property (strong, nonatomic) UITapGestureRecognizer *dismissTap;
 @property NSTimeInterval timeout;
 @property UIInterfaceOrientation interfaceOrientation;
+@property CGFloat bottomMargin;
 @property BOOL isShowingKeyboard;
 @property CGFloat keyboardHeight;
 
@@ -69,6 +70,8 @@
         _message.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
         _message.numberOfLines = 0;
         _message.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        _position = OLGhostAlertViewPositionBottom;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didRotate:)
@@ -142,7 +145,13 @@
     
     CGFloat xPosition = floorf((screenRect.size.width / 2) - (totalWidth / 2));
     
-    self = [self initWithFrame:CGRectMake(xPosition, screenRect.size.height + 20, totalWidth, totalHeight)];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        _bottomMargin = 25;
+    } else {
+        _bottomMargin = 50;
+    }
+    
+    self = [self initWithFrame:CGRectMake(xPosition, screenRect.size.height - totalHeight - _bottomMargin, totalWidth, totalHeight)];
     
     if (self) {
         _title.text = title;
@@ -185,8 +194,6 @@
 
 - (void)show
 {
-    CGRect fullscreenRect = [self getScreenBoundsForCurrentOrientation];
-    
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     UIView *parentView;
     
@@ -205,17 +212,8 @@
     
     [parentView addSubview:self];
     
-    CGFloat bottomMargin;
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        bottomMargin = 25;
-    } else {
-        bottomMargin = 50;
-    }
-    
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
-        self.frame = CGRectMake(self.frame.origin.x, fullscreenRect.size.height - self.frame.size.height - bottomMargin, self.frame.size.width, self.frame.size.height);
     } completion:^(BOOL finished){
         [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
     }];
@@ -261,18 +259,18 @@
 {
     CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
     
-    CGFloat screenWidth = screenRect.size.width;
-    CGFloat screenHeight;
+    self.frame = CGRectMake(floorf((screenRect.size.width / 2) - (self.frame.size.width / 2)), self.frame.origin.y, self.frame.size.width, self.frame.size.height);
     
-    if (self.isShowingKeyboard) {
-        screenHeight = screenRect.size.height - self.keyboardHeight;
-        
-    } else {
-        screenHeight = screenRect.size.height;
+    OLGhostAlertViewPosition storedPosition = self.position;
+    _position = 8;
+    self.position = storedPosition;
+    
+    if (self.isShowingKeyboard && self.position == OLGhostAlertViewPositionBottom) {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
     }
     
     [UIView animateWithDuration:0.25 animations:^{
-        self.frame = CGRectMake(floorf((screenWidth / 2) - (self.frame.size.width / 2)), screenHeight - self.frame.size.height - 50, self.frame.size.width, self.frame.size.height);
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
     }];
 }
 
@@ -296,6 +294,35 @@
     }
     
     return screenRect;
+}
+
+#pragma mark - Position setter
+
+- (void)setPosition:(OLGhostAlertViewPosition)position
+{
+    if (_position == position) return;
+    
+    _position = position;
+    
+    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
+    
+    CGFloat yPosition;
+    
+    switch (position) {
+        case OLGhostAlertViewPositionBottom:
+            yPosition = screenRect.size.height - self.frame.size.height - self.bottomMargin;
+            break;
+            
+        case OLGhostAlertViewPositionCenter:
+            yPosition = ceilf((fullscreenRect.size.height / 2) - (self.frame.size.height / 2));
+            break;
+            
+        case OLGhostAlertViewPositionTop:
+            yPosition = self.bottomMargin;
+            break;
+    }
+    
+    self.frame = CGRectMake(self.frame.origin.x, yPosition, self.frame.size.width, self.frame.size.height);
 }
 
 #pragma mark - dealloc
