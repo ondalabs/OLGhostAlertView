@@ -21,6 +21,6 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewPosition) {
 - (void)show;
 - (void)hide;
 
-@property (nonatomic, strong) OLGhostAlertViewPosition position;
+@property (nonatomic) OLGhostAlertViewPosition position;
 
 @end
