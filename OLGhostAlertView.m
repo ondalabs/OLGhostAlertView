@@ -214,17 +214,23 @@
     
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
-    } completion:^(BOOL finished){
+    } completion:^(BOOL finished) {
         [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
     }];
 }
 
 - (void)hide
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished){
         [self removeFromSuperview];
+        
+        if (self.completionBlock) {
+            self.completionBlock();
+        }
     }];
 }
 

@@ -72,6 +72,11 @@ This property controls the origin of the view on the Y axis.
 
 The default value is `OLGhostAlertViewPositionBottom`.
 
+#### completionBlock
+A block to execute after the instance has been dismissed.
+
+	@property (nonatomic, copy) void (^completionBlock)(void);
+
 
 Known Issues
 ---------------
