@@ -75,7 +75,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didRotate:)
-                                                     name:@"UIApplicationDidChangeStatusBarOrientationNotification"
+                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -286,9 +286,7 @@
     CGRect screenRect = screen.bounds; // implicitly in Portrait orientation.
     
     if (UIDeviceOrientationIsLandscape(orientation)) {
-        CGRect temp;
-        temp.size.width = screenRect.size.height;
-        temp.size.height = screenRect.size.width;
+        CGRect temp = CGRectMake(0, 0, screenRect.size.height, screenRect.size.width);
         screenRect = temp;
     }
     
