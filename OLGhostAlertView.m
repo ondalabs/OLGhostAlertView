@@ -195,22 +195,15 @@
 - (void)show
 {
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-    UIView *parentView;
     
-    if (window.rootViewController.presentedViewController) {
-        parentView = window.rootViewController.presentedViewController.view;
-    } else {
-        parentView = window.rootViewController.view;
-    }
-    
-    for (UIView *subView in [parentView subviews]) {
+    for (UIView *subView in [window subviews]) {
         if ([subView isKindOfClass:[OLGhostAlertView class]]) {
             OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subView;
             [otherOLGAV hide];
         }
     }
     
-    [parentView addSubview:self];
+    [window addSubview:self];
     
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
@@ -320,11 +313,11 @@
             break;
             
         case OLGhostAlertViewPositionCenter:
-            yPosition = ceilf((screenRect.size.height / 2) - (self.frame.size.height / 2));
+            yPosition = ceilf((screenRect.size.height / 2) - (self.frame.size.height / 2)) + 10;
             break;
             
         case OLGhostAlertViewPositionTop:
-            yPosition = self.bottomMargin;
+            yPosition = self.bottomMargin + 20;
             break;
     }
     

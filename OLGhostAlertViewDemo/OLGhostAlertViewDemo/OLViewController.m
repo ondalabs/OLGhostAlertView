@@ -24,10 +24,8 @@
     self.view.backgroundColor = [UIColor lightGrayColor];
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    
     OLGhostAlertView *demo = [[OLGhostAlertView alloc] initWithTitle:@"Hi there." message:nil timeout:5.0 dismissible:NO];
     demo.position = OLGhostAlertViewPositionTop;
     demo.completionBlock = ^(void) {

@@ -301,6 +301,7 @@
 				7CAA785B16C1CF4C0088E893 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

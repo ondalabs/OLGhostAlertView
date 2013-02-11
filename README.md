@@ -23,6 +23,8 @@ After that, here's how you present an OLGhostAlertView:
 
 Just like with UIAlertView, the dismissal of the view is handled by the view itself, so there's no need to call anything else. If you do want to dismiss it manually, just call `hide` on the instance.
 
+OLGhostAlertView has to be `show`n in or after `viewDidAppear:` is invoked on the Root View Controller. If you attempt to call `show` before that, the instance may not be visible on the screen.
+
 ### Init methods
 
 
@@ -83,9 +85,9 @@ Known Issues
 
 Here are some current limitations in OLGhostAlertView:
 
- - The view should be added as a subview of the key window, but it's not ([#1](https://github.com/ondalabs/OLGhostAlertView/issues/1))
  - Adding an OLGhostAlertView while displaying a keyboard will cause it to be placed under the keyboard ([#3](https://github.com/ondalabs/OLGhostAlertView/issues/3)). This can be worked around using the `position` property. 
 Another way to go around this is described on leberwurstsaft's [comment on the issue](https://github.com/ondalabs/OLGhostAlertView/issues/3#issuecomment-9201846).
+- If interacting with a UIScrollView, OLGhostAlertView doesn't `hide` until touch tracking actions are complete ([#7](https://github.com/ondalabs/OLGhostAlertView/issues/7)). A workaround is available on the issue thread.
  
 You can find an up-to-date list with full descriptions and discussion at [the Issues page](https://github.com/ondalabs/OLGhostAlertView/issues).
 
