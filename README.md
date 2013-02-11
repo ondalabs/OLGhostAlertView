@@ -87,7 +87,7 @@ Here are some current limitations in OLGhostAlertView:
 
  - Adding an OLGhostAlertView while displaying a keyboard will cause it to be placed under the keyboard ([#3](https://github.com/ondalabs/OLGhostAlertView/issues/3)). This can be worked around using the `position` property. 
 Another way to go around this is described on leberwurstsaft's [comment on the issue](https://github.com/ondalabs/OLGhostAlertView/issues/3#issuecomment-9201846).
-- If interacting with a UIScrollView, OLGhostAlertView doesn't `hide` until touch tracking actions are complete ([#7](https://github.com/ondalabs/OLGhostAlertView/issues/7)). A workaround is available on the issue thread.
+ - If interacting with a UIScrollView, OLGhostAlertView doesn't `hide` until touch tracking actions are complete ([#7](https://github.com/ondalabs/OLGhostAlertView/issues/7)). A workaround is available on the issue thread.
  
 You can find an up-to-date list with full descriptions and discussion at [the Issues page](https://github.com/ondalabs/OLGhostAlertView/issues).
 
