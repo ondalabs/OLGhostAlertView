@@ -74,6 +74,15 @@ This property controls the origin of the view on the Y axis.
 
 The default value is `OLGhostAlertViewPositionBottom`.
 
+#### bgOpacity
+The opacity of the background color.
+
+	@property (nonatomic) float bgOpacity;
+
+This property controls alpha property for the backgroundColor of the view.
+
+The default value is 0.45.
+
 #### completionBlock
 A block to execute after the instance has been dismissed.
 

@@ -27,18 +27,22 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     OLGhostAlertView *demo = [[OLGhostAlertView alloc] initWithTitle:@"Hi there." message:nil timeout:5.0 dismissible:NO];
+    
     demo.position = OLGhostAlertViewPositionTop;
     demo.completionBlock = ^(void) {
         
         OLGhostAlertView *demo2 = [[OLGhostAlertView alloc] initWithTitle:@"This is a demo of OLGhostAlertView."];
+        demo2.bgOpacity = 0.3;
         demo2.position = OLGhostAlertViewPositionCenter;
         demo2.completionBlock = ^(void) {
             
             OLGhostAlertView *demo3 = [[OLGhostAlertView alloc] initWithTitle:@"Check out the code." message:@"Try out different setups before implementing it in your app."];
+            demo3.bgOpacity = 0.8;
             demo3.completionBlock = ^(void) {
                 
                 OLGhostAlertView *demo4 = [[OLGhostAlertView alloc] initWithTitle:@"Have fun!" message:@"You can tap this message to dismiss it." timeout:100.0 dismissible:YES];
                 demo4.position = OLGhostAlertViewPositionCenter;
+                demo4.bgOpacity = 0.2;
                 [demo4 show];
                 
             };
