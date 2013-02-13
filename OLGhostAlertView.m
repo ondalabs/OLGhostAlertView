@@ -38,6 +38,7 @@
 @synthesize dismissTap = _dismissTap;
 @synthesize timeout = _timeout;
 @synthesize interfaceOrientation = _interfaceOrientation;
+@synthesize bgOpacity = _bgOpacity;
 
 #pragma mark - Initialization
 
@@ -50,7 +51,7 @@
         self.layer.shadowOpacity = 0.7f;
         self.layer.shadowRadius = 5.0f;
         self.layer.shadowOffset = CGSizeMake(0, 2);
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:_bgOpacity];
         self.alpha = 0;
         
         _title = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
@@ -105,6 +106,7 @@
     CGFloat maxWidth;
     CGFloat totalLabelWidth;
     CGFloat totalHeight;
+    _bgOpacity = 0.45;
     
     CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
     
@@ -320,6 +322,10 @@
     }
     
     self.frame = CGRectMake(self.frame.origin.x, yPosition, self.frame.size.width, self.frame.size.height);
+}
+
+- (void)setBgOpacity:(float)bgOpacity{
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:bgOpacity];
 }
 
 #pragma mark - dealloc
