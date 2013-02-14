@@ -16,6 +16,11 @@ OLGhostAlertView requires that you include the QuartzCore.framework in your proj
 
     #import "OLGhostAlertView.h"
 
+You can also use [CocoaPods](http://cocoapods.org) to add OLGhostAlertView to you project:
+
+    pod 'OLGhostAlertView', '~>1.2.1'
+
+
 After that, here's how you present an OLGhostAlertView:
 
     OLGhostAlertView *ghastly = [[OLGhostAlertView alloc] initWithTitle:@"I am the walrus." message: @"Sitting on a cornflake, waiting for the van to come."];
