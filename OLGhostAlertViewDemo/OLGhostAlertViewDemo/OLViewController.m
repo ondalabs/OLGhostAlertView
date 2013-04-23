@@ -37,7 +37,7 @@
             OLGhostAlertView *demo3 = [[OLGhostAlertView alloc] initWithTitle:@"Check out the code." message:@"Try out different setups before implementing it in your app."];
             demo3.completionBlock = ^(void) {
                 
-                OLGhostAlertView *demo4 = [[OLGhostAlertView alloc] initWithTitle:@"Have fun!" message:@"You can tap this message to dismiss it." timeout:100.0 dismissible:YES];
+                OLGhostAlertView *demo4 = [[OLGhostAlertView alloc] initWithTitle:@"Have fun!" message:@"You can tap this message to dismiss it." timeout:900.0 dismissible:YES];
                 demo4.position = OLGhostAlertViewPositionCenter;
                 [demo4 show];
                 

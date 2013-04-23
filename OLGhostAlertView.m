@@ -2,7 +2,7 @@
 //  OLGhostAlertView.m
 //
 //  Originally created by Radu Dutzan.
-//  (c) 2012 Onda.
+//  (c) 2012-2013 Onda.
 //
 
 #import <QuartzCore/QuartzCore.h>
@@ -20,8 +20,8 @@
 
 @interface OLGhostAlertView ()
 
-@property (strong, nonatomic) UILabel *title;
-@property (strong, nonatomic) UILabel *message;
+@property (strong, nonatomic) UILabel *titleLabel;
+@property (strong, nonatomic) UILabel *messageLabel;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissTap;
 @property NSTimeInterval timeout;
 @property UIInterfaceOrientation interfaceOrientation;
@@ -33,8 +33,8 @@
 
 @implementation OLGhostAlertView
 
-@synthesize title = _title;
-@synthesize message = _message;
+@synthesize titleLabel = _titleLabel;
+@synthesize messageLabel = _messageLabel;
 @synthesize dismissTap = _dismissTap;
 @synthesize timeout = _timeout;
 @synthesize interfaceOrientation = _interfaceOrientation;
@@ -53,28 +53,38 @@
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
         self.alpha = 0;
         
-        _title = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
-        _title.backgroundColor = [UIColor clearColor];
-        _title.textColor = [UIColor whiteColor];
-        _title.textAlignment = NSTextAlignmentCenter;
-        _title.font = [UIFont boldSystemFontOfSize:TITLE_FONT_SIZE];
-        _title.numberOfLines = 0;
-        _title.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.textColor = [UIColor whiteColor];
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.font = [UIFont boldSystemFontOfSize:TITLE_FONT_SIZE];
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         
-        [self addSubview:_title];
+        [self addSubview:_titleLabel];
         
-        _message = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, 0, 0, 0)];
-        _message.backgroundColor = [UIColor clearColor];
-        _message.textColor = [UIColor whiteColor];
-        _message.textAlignment = NSTextAlignmentCenter;
-        _message.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
-        _message.numberOfLines = 0;
-        _message.lineBreakMode = NSLineBreakByWordWrapping;
+        _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, 0, 0, 0)];
+        _messageLabel.backgroundColor = [UIColor clearColor];
+        _messageLabel.textColor = [UIColor whiteColor];
+        _messageLabel.textAlignment = NSTextAlignmentCenter;
+        _messageLabel.font = [UIFont systemFontOfSize:MESSAGE_FONT_SIZE];
+        _messageLabel.numberOfLines = 0;
+        _messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _messageLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         
         _position = OLGhostAlertViewPositionBottom;
         
+        _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            _bottomMargin = 25;
+        } else {
+            _bottomMargin = 50;
+        }
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didRotate:)
+                                                 selector:@selector(didChangeOrientation:)
                                                      name:UIApplicationDidChangeStatusBarOrientationNotification
                                                    object:nil];
         
@@ -87,7 +97,6 @@
                                                  selector:@selector(keyboardWillHide:)
                                                      name:UIKeyboardWillHideNotification
                                                    object:nil];
-        
     }
     return self;
 }
@@ -100,68 +109,14 @@
         return self;
     }
     
-    _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    
-    CGFloat maxWidth;
-    CGFloat totalLabelWidth;
-    CGFloat totalHeight;
-    
-    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if (UIDeviceOrientationIsPortrait(_interfaceOrientation)) {
-            maxWidth = 280 - (HORIZONTAL_PADDING * 2);
-        } else {
-            maxWidth = 420 - (HORIZONTAL_PADDING * 2);
-        }
-    } else {
-        maxWidth = 520 - (HORIZONTAL_PADDING * 2);
-    }
-    
-    CGSize constrainedSize;
-    constrainedSize.width = maxWidth;
-    constrainedSize.height = MAXFLOAT;
-    
-    CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
-    CGSize messageSize = CGSizeZero;
-    
-    if (message) {
-        messageSize = [message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
-        
-        totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
-    } else {
-        totalHeight = titleSize.height + floorf(VERTICAL_PADDING * 2);
-    }
-    
-    if (titleSize.width == maxWidth || messageSize.width == maxWidth) {
-        totalLabelWidth = maxWidth;
-    } else if (messageSize.width > titleSize.width) {
-        totalLabelWidth = messageSize.width;
-    } else {
-        totalLabelWidth = titleSize.width;
-    }
-    
-    CGFloat totalWidth = totalLabelWidth + (HORIZONTAL_PADDING * 2);
-    
-    CGFloat xPosition = floorf((screenRect.size.width / 2) - (totalWidth / 2));
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        _bottomMargin = 25;
-    } else {
-        _bottomMargin = 50;
-    }
-    
-    self = [self initWithFrame:CGRectMake(xPosition, screenRect.size.height - totalHeight - _bottomMargin, totalWidth, totalHeight)];
-    
+    self = [self initWithFrame:CGRectZero];
     if (self) {
-        _title.text = title;
-        _title.frame = CGRectMake(_title.frame.origin.x, _title.frame.origin.y, totalLabelWidth, titleSize.height);
+        _titleLabel.text = title;
         
         if (message) {
-            _message.text = message;
-            _message.frame = CGRectMake(_message.frame.origin.x, titleSize.height + floorf(VERTICAL_PADDING * 1.5), totalLabelWidth, messageSize.height);
+            _messageLabel.text = message;
             
-            [self addSubview:_message];
+            [self addSubview:_messageLabel];
         }
         
         _timeout = timeout;
@@ -195,15 +150,22 @@
 - (void)show
 {
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    UIView *parentView;
     
-    for (UIView *subView in [window subviews]) {
+    if (window.rootViewController.presentedViewController) {
+        parentView = window.rootViewController.presentedViewController.view;
+    } else {
+        parentView = window.rootViewController.view;
+    }
+    
+    for (UIView *subView in [parentView subviews]) {
         if ([subView isKindOfClass:[OLGhostAlertView class]]) {
             OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subView;
             [otherOLGAV hide];
         }
     }
     
-    [window addSubview:self];
+    [parentView addSubview:self];
     
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
@@ -227,13 +189,84 @@
     }];
 }
 
-#pragma mark - Handle changes to viewport
+#pragma mark - Calculate and change view frames
 
-- (void)didRotate:(NSNotification *)notification
+- (void)layoutSubviews
 {
-    self.interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    CGFloat maxWidth;
+    CGFloat totalLabelWidth;
+    CGFloat totalHeight;
     
-    [self didChangeScreenBounds];
+    CGRect screenRect = [self superviewBoundsForCurrentOrientation];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (UIDeviceOrientationIsPortrait(self.interfaceOrientation)) {
+            maxWidth = 280 - (HORIZONTAL_PADDING * 2);
+        } else {
+            maxWidth = 420 - (HORIZONTAL_PADDING * 2);
+        }
+    } else {
+        maxWidth = 520 - (HORIZONTAL_PADDING * 2);
+    }
+    
+    CGSize constrainedSize;
+    constrainedSize.width = maxWidth;
+    constrainedSize.height = MAXFLOAT;
+    
+    CGSize titleSize = [self.titleLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
+    CGSize messageSize = CGSizeZero;
+    
+    if (self.messageLabel.text) {
+        messageSize = [self.messageLabel.text sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
+        
+        totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
+        
+    } else {
+        totalHeight = titleSize.height + floorf(VERTICAL_PADDING * 2);
+    }
+    
+    if (titleSize.width == maxWidth || messageSize.width == maxWidth) {
+        totalLabelWidth = maxWidth;
+        
+    } else if (messageSize.width > titleSize.width) {
+        totalLabelWidth = messageSize.width;
+        
+    } else {
+        totalLabelWidth = titleSize.width;
+    }
+    
+    CGFloat totalWidth = totalLabelWidth + (HORIZONTAL_PADDING * 2);
+    
+    CGFloat xPosition = floorf((screenRect.size.width / 2) - (totalWidth / 2));
+    
+    CGFloat yPosition;
+    
+    switch (self.position) {
+        case OLGhostAlertViewPositionBottom:
+        default:
+            yPosition = screenRect.size.height - totalHeight - self.bottomMargin;
+            break;
+            
+        case OLGhostAlertViewPositionCenter:
+            yPosition = ceilf((screenRect.size.height / 2) - (totalHeight / 2));
+            break;
+            
+        case OLGhostAlertViewPositionTop:
+            yPosition = self.bottomMargin;
+            break;
+    }
+    
+    self.frame = CGRectMake(xPosition, yPosition, totalWidth, totalHeight);
+    
+    if (self.isShowingKeyboard && self.position == OLGhostAlertViewPositionBottom) {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
+    }
+    
+    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y, totalLabelWidth, titleSize.height);
+    
+    if (self.messageLabel) {
+        self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, titleSize.height + floorf(VERTICAL_PADDING * 1.5), totalLabelWidth, messageSize.height);
+    }
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
@@ -244,82 +277,35 @@
     self.isShowingKeyboard = YES;
     self.keyboardHeight = keyboardSize.height;
     
-    [self didChangeScreenBounds];
+    [self setNeedsLayout];
 }
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
     self.isShowingKeyboard = NO;
     
-    [self didChangeScreenBounds];
-}
-
-- (void)didChangeScreenBounds
-{
-    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
-    
-    self.frame = CGRectMake(floorf((screenRect.size.width / 2) - (self.frame.size.width / 2)), self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-    
-    OLGhostAlertViewPosition storedPosition = self.position;
-    _position = 8;
-    self.position = storedPosition;
-    
-    if (self.isShowingKeyboard && self.position == OLGhostAlertViewPositionBottom) {
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
-    }
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-    }];
+    [self setNeedsLayout];
 }
 
 #pragma mark - Orientation helper methods
 
-- (CGRect)getScreenBoundsForCurrentOrientation
+- (void)didChangeOrientation:(NSNotification *)notification
 {
-    return [self getScreenBoundsForOrientation:self.interfaceOrientation];
+    self.interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    
+    [self setNeedsLayout];
 }
 
-- (CGRect)getScreenBoundsForOrientation:(UIInterfaceOrientation)orientation
+- (CGRect)superviewBoundsForCurrentOrientation
 {
-    UIScreen *screen = [UIScreen mainScreen];
-    CGRect screenRect = screen.bounds; // implicitly in Portrait orientation.
-    
-    if (UIDeviceOrientationIsLandscape(orientation)) {
-        CGRect temp = CGRectMake(0, 0, screenRect.size.height, screenRect.size.width);
-        screenRect = temp;
-    }
+    return [self screenBoundsForOrientation:self.interfaceOrientation];
+}
+
+- (CGRect)screenBoundsForOrientation:(UIInterfaceOrientation)orientation
+{
+    CGRect screenRect = self.superview.bounds;
     
     return screenRect;
-}
-
-#pragma mark - Position setter
-
-- (void)setPosition:(OLGhostAlertViewPosition)position
-{
-    if (_position == position) return;
-    
-    _position = position;
-    
-    CGRect screenRect = [self getScreenBoundsForCurrentOrientation];
-    
-    CGFloat yPosition;
-    
-    switch (position) {
-        case OLGhostAlertViewPositionBottom:
-            yPosition = screenRect.size.height - self.frame.size.height - self.bottomMargin;
-            break;
-            
-        case OLGhostAlertViewPositionCenter:
-            yPosition = ceilf((screenRect.size.height / 2) - (self.frame.size.height / 2)) + 10;
-            break;
-            
-        case OLGhostAlertViewPositionTop:
-            yPosition = self.bottomMargin + 20;
-            break;
-    }
-    
-    self.frame = CGRectMake(self.frame.origin.x, yPosition, self.frame.size.width, self.frame.size.height);
 }
 
 #pragma mark - dealloc
