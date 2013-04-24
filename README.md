@@ -79,6 +79,24 @@ A block to execute after the instance has been dismissed.
 
 	@property (nonatomic, copy) void (^completionBlock)(void);
 
+#### title
+The string that appears in the title of the alert.
+
+	@property (nonatomic) NSString *title;
+	
+Setting this property after initialization recalculates the view's metrics.
+
+#### message
+Descriptive text that provides more details than the title.
+
+	@property (nonatomic) NSString *message;
+	
+Setting this property after initialization recalculates the view's metrics.
+
+#### visible
+A Boolean value that indicates whether the view is currently visible on the screen.
+
+	@property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
 Known Issues
 ---------------

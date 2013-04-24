@@ -26,8 +26,9 @@
 @property NSTimeInterval timeout;
 @property UIInterfaceOrientation interfaceOrientation;
 @property CGFloat bottomMargin;
-@property BOOL isShowingKeyboard;
+@property BOOL keyboardIsVisible;
 @property CGFloat keyboardHeight;
+@property (nonatomic, readwrite) BOOL visible;
 
 @end
 
@@ -103,19 +104,13 @@
 
 - (id)initWithTitle:(NSString *)title message:(NSString *)message timeout:(NSTimeInterval)timeout dismissible:(BOOL)dismissible
 {
-    // title cannot be nil. message can be nil.
-    if (!title) {
-        NSLog(@"OLGhostAlertView: title cannot be nil. Your app will now crash.");
-        return self;
-    }
-    
     self = [self initWithFrame:CGRectZero];
     if (self) {
-        _titleLabel.text = title;
+        self.title = title;
+        
+        self.message = message;
         
         if (message) {
-            _messageLabel.text = message;
-            
             [self addSubview:_messageLabel];
         }
         
@@ -149,6 +144,12 @@
 
 - (void)show
 {
+    if (!self.title && !self.message) {
+        NSLog(@"OLGhostAlertView: Your alert doesn't seem to have any content.");
+    }
+    
+    if (self.isVisible) return;
+    
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     UIView *parentView;
     
@@ -167,6 +168,8 @@
     
     [parentView addSubview:self];
     
+    self.visible = YES;
+    
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
@@ -181,6 +184,8 @@
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished){
+        self.visible = NO;
+        
         [self removeFromSuperview];
         
         if (self.completionBlock) {
@@ -213,11 +218,11 @@
     constrainedSize.width = maxWidth;
     constrainedSize.height = MAXFLOAT;
     
-    CGSize titleSize = [self.titleLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
+    CGSize titleSize = [self.title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
     CGSize messageSize = CGSizeZero;
     
-    if (self.messageLabel.text) {
-        messageSize = [self.messageLabel.text sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
+    if (self.message) {
+        messageSize = [self.message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
         
         totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
         
@@ -258,7 +263,7 @@
     
     self.frame = CGRectMake(xPosition, yPosition, totalWidth, totalHeight);
     
-    if (self.isShowingKeyboard && self.position == OLGhostAlertViewPositionBottom) {
+    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom) {
         self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
     }
     
@@ -274,7 +279,7 @@
     NSDictionary *keyboardInfo = [notification userInfo];
     CGSize keyboardSize = [[keyboardInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    self.isShowingKeyboard = YES;
+    self.keyboardIsVisible = YES;
     self.keyboardHeight = keyboardSize.height;
     
     [self setNeedsLayout];
@@ -282,7 +287,7 @@
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    self.isShowingKeyboard = NO;
+    self.keyboardIsVisible = NO;
     
     [self setNeedsLayout];
 }
@@ -298,14 +303,29 @@
 
 - (CGRect)superviewBoundsForCurrentOrientation
 {
-    return [self screenBoundsForOrientation:self.interfaceOrientation];
-}
-
-- (CGRect)screenBoundsForOrientation:(UIInterfaceOrientation)orientation
-{
     CGRect screenRect = self.superview.bounds;
     
     return screenRect;
+}
+
+#pragma mark - Title and message setters
+
+- (void)setTitle:(NSString *)title
+{
+    _title = title;
+    
+    self.titleLabel.text = title;
+    
+    [self setNeedsLayout];
+}
+
+- (void)setMessage:(NSString *)message
+{
+    _message = message;
+    
+    self.messageLabel.text = message;
+    
+    [self setNeedsLayout];
 }
 
 #pragma mark - dealloc

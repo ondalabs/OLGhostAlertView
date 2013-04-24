@@ -23,5 +23,8 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewPosition) {
 
 @property (nonatomic) OLGhostAlertViewPosition position;
 @property (nonatomic, copy) void (^completionBlock)(void);
+@property (nonatomic) NSString *title;
+@property (nonatomic) NSString *message;
+@property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
 @end
