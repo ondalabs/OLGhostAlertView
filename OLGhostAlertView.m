@@ -74,6 +74,8 @@
         _messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _messageLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         
+        [self addSubview:_messageLabel];
+        
         _position = OLGhostAlertViewPositionBottom;
         
         _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -109,10 +111,6 @@
         self.title = title;
         
         self.message = message;
-        
-        if (message) {
-            [self addSubview:_messageLabel];
-        }
         
         _timeout = timeout;
         
@@ -198,9 +196,9 @@
 
 - (void)layoutSubviews
 {
-    CGFloat maxWidth;
-    CGFloat totalLabelWidth;
-    CGFloat totalHeight;
+    CGFloat maxWidth = 0;
+    CGFloat totalLabelWidth = 0;
+    CGFloat totalHeight = 0;
     
     CGRect screenRect = [self superviewBoundsForCurrentOrientation];
     
@@ -214,7 +212,7 @@
         maxWidth = 520 - (HORIZONTAL_PADDING * 2);
     }
     
-    CGSize constrainedSize;
+    CGSize constrainedSize = CGSizeZero;
     constrainedSize.width = maxWidth;
     constrainedSize.height = MAXFLOAT;
     
@@ -244,7 +242,7 @@
     
     CGFloat xPosition = floorf((screenRect.size.width / 2) - (totalWidth / 2));
     
-    CGFloat yPosition;
+    CGFloat yPosition = 0;
     
     switch (self.position) {
         case OLGhostAlertViewPositionBottom:
