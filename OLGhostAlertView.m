@@ -171,7 +171,7 @@
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
-        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
+        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }];
 }
 
