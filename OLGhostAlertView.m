@@ -12,6 +12,7 @@
 #define VERTICAL_PADDING 14.0
 #define TITLE_FONT_SIZE 17
 #define MESSAGE_FONT_SIZE 15
+#define MESSAGE_ANIMATION_TIME 0.5
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 #define NSTextAlignmentCenter UITextAlignmentCenter
@@ -151,10 +152,14 @@
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     UIView *parentView;
     
-    if (window.rootViewController.presentedViewController) {
-        parentView = window.rootViewController.presentedViewController.view;
+    if (self.viewToDisplayIn) {
+        parentView = self.viewToDisplayIn; 
     } else {
-        parentView = window.rootViewController.view;
+        if (window.rootViewController.presentedViewController) {
+            parentView = window.rootViewController.presentedViewController.view;
+        } else {
+            parentView = window.rootViewController.view;
+        }
     }
     
     for (UIView *subView in [parentView subviews]) {
@@ -168,10 +173,10 @@
     
     self.visible = YES;
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:MESSAGE_ANIMATION_TIME animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
-        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
     }];
 }
 
@@ -179,7 +184,7 @@
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:MESSAGE_ANIMATION_TIME animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished){
         self.visible = NO;
