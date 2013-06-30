@@ -1,11 +1,11 @@
 # OLGhostAlertView
 
-Temporary and unobtrusive translucent alert view for iPhone and iPad. Here's what it looks like: [iPad](http://cl.ly/Iuao) / [iPhone](http://cl.ly/IvD7)
+Temporary and unobtrusive translucent alert view for iOS. Here's what it looks like: [iPad](http://cl.ly/Iuao) / [iPhone](http://cl.ly/IvD7)
 
 
 ## Details
 
-OLGhostAlertView allows you to present a translucent view with a title and an optional message on the bottom of the screen. Use it to inform your user about temporary issues that do not require any immediate action and are not blocking the flow of your app.
+OLGhostAlertView allows you to present a translucent alert view with a title and an optional message on the bottom of the screen. Use it to inform your user about temporary issues that do not require any immediate action and are not blocking the flow of your app.
 
 OLGhostAlertView can have a title and an optional message, in a way similar to UIAlertView. It automatically fades out after a configurable time interval and, by default, can be dismissed with a tap. It can automatically adapt its size according to the device it's being deployed on, user interface orientation and length of the strings passed to it.
 
@@ -42,10 +42,10 @@ _message_
 &nbsp;&nbsp;&nbsp;&nbsp;Descriptive text that provides more details than the title. Set in a regular, 15pt font. Can be `nil`.
 
 _timeout_  
-&nbsp;&nbsp;&nbsp;&nbsp;Amount of seconds before the view is automatically dismissed. 
+&nbsp;&nbsp;&nbsp;&nbsp;Time interval before the alert is automatically dismissed. 
 
 _dismissible_  
-&nbsp;&nbsp;&nbsp;&nbsp;Whether the view can be dismissed with a tap or not. 
+&nbsp;&nbsp;&nbsp;&nbsp;Whether the alert can be dismissed with a tap or not. 
 
 
 #### initWithTitle:message:
@@ -60,8 +60,6 @@ Equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default 
 Equivalent to `initWithTitle:message:timeout:dismissible:`, but assumes default values for `message` (`nil`) `timeout` (`4` seconds) and `dismissible` (`YES`). 
 
     - (id)initWithTitle:(NSString *)title;
-
-You're welcome, lazy people.
 
 ### Properties
 
@@ -92,6 +90,16 @@ Descriptive text that provides more details than the title.
 	@property (nonatomic) NSString *message;
 	
 Setting this property after initialization recalculates the view's metrics.
+
+#### timeout
+Time interval before the alert is automatically dismissed.
+
+	@property (nonatomic) NSTimeInterval timeout;
+
+#### dismissible
+Whether the alert can be dismissed with a tap or not.
+
+	@property (nonatomic) BOOL dismissible;
 
 #### visible
 A Boolean value that indicates whether the view is currently visible on the screen.

@@ -23,7 +23,6 @@
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *messageLabel;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissTap;
-@property NSTimeInterval timeout;
 @property UIInterfaceOrientation interfaceOrientation;
 @property CGFloat bottomMargin;
 @property BOOL keyboardIsVisible;
@@ -33,12 +32,6 @@
 @end
 
 @implementation OLGhostAlertView
-
-@synthesize titleLabel = _titleLabel;
-@synthesize messageLabel = _messageLabel;
-@synthesize dismissTap = _dismissTap;
-@synthesize timeout = _timeout;
-@synthesize interfaceOrientation = _interfaceOrientation;
 
 #pragma mark - Initialization
 
@@ -80,11 +73,12 @@
         
         _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
             _bottomMargin = 25;
-        } else {
+        else
             _bottomMargin = 50;
-        }
+        
+        _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didChangeOrientation:)
@@ -109,32 +103,22 @@
     self = [self initWithFrame:CGRectZero];
     if (self) {
         self.title = title;
-        
         self.message = message;
-        
-        _timeout = timeout;
-        
-        if (dismissible) {
-            _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
-            
-            [self addGestureRecognizer:_dismissTap];
-        }
+        self.timeout = timeout;
+        self.dismissible = dismissible;
     }
-    
     return self;
 }
 
 - (id)initWithTitle:(NSString *)title message:(NSString *)message
 {
     self = [self initWithTitle:title message:message timeout:6 dismissible:YES];
-    
     return self;
 }
 
 - (id)initWithTitle:(NSString *)title
 {
     self = [self initWithTitle:title message:nil timeout:4 dismissible:YES];
-    
     return self;
 }
 
@@ -142,20 +126,22 @@
 
 - (void)show
 {
-    if (!self.title && !self.message) {
+    if (!self.title && !self.message)
         NSLog(@"OLGhostAlertView: Your alert doesn't seem to have any content.");
-    }
     
     if (self.isVisible) return;
     
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     UIView *parentView;
     
-    if (window.rootViewController.presentedViewController) {
+    if (window.rootViewController.presentedViewController.presentedViewController.presentedViewController)
+        parentView = window.rootViewController.presentedViewController.presentedViewController.presentedViewController.view;
+    else if (window.rootViewController.presentedViewController.presentedViewController)
+        parentView = window.rootViewController.presentedViewController.presentedViewController.view;
+    else if (window.rootViewController.presentedViewController)
         parentView = window.rootViewController.presentedViewController.view;
-    } else {
+    else
         parentView = window.rootViewController.view;
-    }
     
     for (UIView *subView in [parentView subviews]) {
         if ([subView isKindOfClass:[OLGhostAlertView class]]) {
@@ -171,7 +157,7 @@
     [UIView animateWithDuration:0.5 animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
-        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+        [self performSelector:@selector(hide) withObject:nil afterDelay:self.timeout];
     }];
 }
 
@@ -186,13 +172,11 @@
         
         [self removeFromSuperview];
         
-        if (self.completionBlock) {
-            self.completionBlock();
-        }
+        if (self.completionBlock) self.completionBlock();
     }];
 }
 
-#pragma mark - Calculate and change view frames
+#pragma mark - View layout
 
 - (void)layoutSubviews
 {
@@ -200,14 +184,13 @@
     CGFloat totalLabelWidth = 0;
     CGFloat totalHeight = 0;
     
-    CGRect screenRect = [self superviewBoundsForCurrentOrientation];
+    CGRect screenRect = self.superview.bounds;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if (UIDeviceOrientationIsPortrait(self.interfaceOrientation)) {
+        if (UIDeviceOrientationIsPortrait(self.interfaceOrientation))
             maxWidth = 280 - (HORIZONTAL_PADDING * 2);
-        } else {
+        else
             maxWidth = 420 - (HORIZONTAL_PADDING * 2);
-        }
     } else {
         maxWidth = 520 - (HORIZONTAL_PADDING * 2);
     }
@@ -261,15 +244,13 @@
     
     self.frame = CGRectMake(xPosition, yPosition, totalWidth, totalHeight);
     
-    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom) {
+    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom)
         self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
-    }
     
     self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y, totalLabelWidth, titleSize.height);
     
-    if (self.messageLabel) {
+    if (self.messageLabel) 
         self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, titleSize.height + floorf(VERTICAL_PADDING * 1.5), totalLabelWidth, messageSize.height);
-    }
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
@@ -290,7 +271,7 @@
     [self setNeedsLayout];
 }
 
-#pragma mark - Orientation helper methods
+#pragma mark - Orientation handling
 
 - (void)didChangeOrientation:(NSNotification *)notification
 {
@@ -299,14 +280,7 @@
     [self setNeedsLayout];
 }
 
-- (CGRect)superviewBoundsForCurrentOrientation
-{
-    CGRect screenRect = self.superview.bounds;
-    
-    return screenRect;
-}
-
-#pragma mark - Title and message setters
+#pragma mark - Setters
 
 - (void)setTitle:(NSString *)title
 {
@@ -326,7 +300,17 @@
     [self setNeedsLayout];
 }
 
-#pragma mark - dealloc
+- (void)setDismissible:(BOOL)dismissible
+{
+    _dismissible = dismissible;
+    
+    if (dismissible)
+        [self addGestureRecognizer:self.dismissTap];
+    else
+        if (self.gestureRecognizers) [self removeGestureRecognizer:self.dismissTap];
+}
+
+#pragma mark - Cleanup
 
 - (void)dealloc
 {

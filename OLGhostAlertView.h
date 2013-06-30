@@ -25,6 +25,8 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewPosition) {
 @property (nonatomic, copy) void (^completionBlock)(void);
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *message;
+@property (nonatomic) NSTimeInterval timeout;
+@property (nonatomic) BOOL dismissible;
 @property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
 @end
