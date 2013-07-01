@@ -131,21 +131,16 @@
     
     if (self.isVisible) return;
     
-    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-    UIView *parentView;
+    UIViewController *parentController = [[[UIApplication sharedApplication] delegate] window].rootViewController;
+
+    while (parentController.presentedViewController)
+        parentController = parentController.presentedViewController;
     
-    if (window.rootViewController.presentedViewController.presentedViewController.presentedViewController)
-        parentView = window.rootViewController.presentedViewController.presentedViewController.presentedViewController.view;
-    else if (window.rootViewController.presentedViewController.presentedViewController)
-        parentView = window.rootViewController.presentedViewController.presentedViewController.view;
-    else if (window.rootViewController.presentedViewController)
-        parentView = window.rootViewController.presentedViewController.view;
-    else
-        parentView = window.rootViewController.view;
+    UIView *parentView = parentController.view;
     
-    for (UIView *subView in [parentView subviews]) {
-        if ([subView isKindOfClass:[OLGhostAlertView class]]) {
-            OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subView;
+    for (UIView *subview in [parentView subviews]) {
+        if ([subview isKindOfClass:[OLGhostAlertView class]]) {
+            OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subview;
             [otherOLGAV hide];
         }
     }
