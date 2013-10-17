@@ -13,6 +13,12 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewPosition) {
     OLGhostAlertViewPositionTop
 };
 
+typedef NS_ENUM(NSUInteger, OLGhostAlertViewStyle) {
+    OLGhostAlertViewStyleDefault, // defaults to OLGhostAlertViewStyleDark
+    OLGhostAlertViewStyleLight,
+    OLGhostAlertViewStyleDark
+};
+
 @interface OLGhostAlertView : UIView
 
 - (id)initWithTitle:(NSString *)title;
@@ -22,6 +28,7 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewPosition) {
 - (void)hide;
 
 @property (nonatomic) OLGhostAlertViewPosition position;
+@property (nonatomic) OLGhostAlertViewStyle style;
 @property (nonatomic, copy) void (^completionBlock)(void);
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *message;

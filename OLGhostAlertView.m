@@ -11,7 +11,7 @@
 #define HORIZONTAL_PADDING 18.0
 #define VERTICAL_PADDING 14.0
 #define TITLE_FONT_SIZE 17
-#define MESSAGE_FONT_SIZE 15
+#define MESSAGE_FONT_SIZE 14
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 #define NSTextAlignmentCenter UITextAlignmentCenter
@@ -40,12 +40,34 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.layer.cornerRadius = 5.0f;
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOpacity = 0.7f;
-        self.layer.shadowRadius = 5.0f;
-        self.layer.shadowOffset = CGSizeMake(0, 2);
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
         self.alpha = 0;
+        
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            self.layer.shadowColor = [UIColor blackColor].CGColor;
+            self.layer.shadowOpacity = 0.7f;
+            self.layer.shadowRadius = 5.0f;
+            self.layer.shadowOffset = CGSizeMake(0, 2);
+        } else {
+            self.layer.shadowColor = [UIColor colorWithWhite:0 alpha:0.1].CGColor;
+            self.layer.shadowOffset = CGSizeMake(0, 0);
+            self.layer.shadowOpacity = 1.0;
+            self.layer.shadowRadius = 30.0;
+            
+            UIMotionEffectGroup *motionEffects = [UIMotionEffectGroup new];
+            
+            UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+            horizontalMotionEffect.minimumRelativeValue = @-21;
+            horizontalMotionEffect.maximumRelativeValue = @21;
+            
+            UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+            verticalMotionEffect.minimumRelativeValue = @-25;
+            verticalMotionEffect.maximumRelativeValue = @25;
+            
+            motionEffects.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
+            
+            [self addMotionEffect:motionEffects];
+        }
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
         _titleLabel.backgroundColor = [UIColor clearColor];
@@ -127,7 +149,7 @@
 - (void)show
 {
     if (!self.title && !self.message)
-        NSLog(@"OLGhostAlertView: Your alert doesn't seem to have any content.");
+        NSLog(@"OLGhostAlertView: Your alert doesn't have any content.");
     
     if (self.isVisible) return;
     
@@ -206,15 +228,14 @@
         totalHeight = titleSize.height + floorf(VERTICAL_PADDING * 2);
     }
     
-    if (titleSize.width == maxWidth || messageSize.width == maxWidth) {
+    if (titleSize.width == maxWidth || messageSize.width == maxWidth)
         totalLabelWidth = maxWidth;
-        
-    } else if (messageSize.width > titleSize.width) {
+    
+    else if (messageSize.width > titleSize.width)
         totalLabelWidth = messageSize.width;
-        
-    } else {
+    
+    else
         totalLabelWidth = titleSize.width;
-    }
     
     CGFloat totalWidth = totalLabelWidth + (HORIZONTAL_PADDING * 2);
     
@@ -225,7 +246,7 @@
     switch (self.position) {
         case OLGhostAlertViewPositionBottom:
         default:
-            yPosition = screenRect.size.height - totalHeight - self.bottomMargin;
+            yPosition = screenRect.size.height - ceilf(totalHeight) - self.bottomMargin;
             break;
             
         case OLGhostAlertViewPositionCenter:
@@ -237,15 +258,15 @@
             break;
     }
     
-    self.frame = CGRectMake(xPosition, yPosition, totalWidth, totalHeight);
+    self.frame = CGRectMake(xPosition, yPosition, ceilf(totalWidth), ceilf(totalHeight));
     
     if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom)
         self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
     
-    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y, totalLabelWidth, titleSize.height);
+    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, ceilf(self.titleLabel.frame.origin.y), ceilf(totalLabelWidth), ceilf(titleSize.height));
     
     if (self.messageLabel) 
-        self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, titleSize.height + floorf(VERTICAL_PADDING * 1.5), totalLabelWidth, messageSize.height);
+        self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, ceilf(titleSize.height) + floorf(VERTICAL_PADDING * 1.5), ceilf(totalLabelWidth), ceilf(messageSize.height));
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
@@ -303,6 +324,33 @@
         [self addGestureRecognizer:self.dismissTap];
     else
         if (self.gestureRecognizers) [self removeGestureRecognizer:self.dismissTap];
+}
+
+- (void)setStyle:(OLGhostAlertViewStyle)style
+{
+    OLGhostAlertViewStyle defaultStyle = OLGhostAlertViewStyleDark;
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+        defaultStyle = OLGhostAlertViewStyleLight;
+    
+    if (style == OLGhostAlertViewStyleDefault) style = defaultStyle;
+    
+    _style = style;
+    
+    UIColor *backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
+    UIColor *textColor = [UIColor whiteColor];
+    
+    if (style == OLGhostAlertViewStyleLight) {
+        backgroundColor = [UIColor colorWithWhite:1 alpha:0.95];
+        textColor = [UIColor blackColor];
+    } else {
+        backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
+        textColor = [UIColor whiteColor];
+    }
+    
+    self.backgroundColor = backgroundColor;
+    self.titleLabel.textColor = textColor;
+    self.messageLabel.textColor = textColor;
 }
 
 #pragma mark - Cleanup
