@@ -91,6 +91,7 @@
         
         [self addSubview:_messageLabel];
         
+        self.style = OLGhostAlertViewStyleDefault;
         _position = OLGhostAlertViewPositionBottom;
         
         _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -160,14 +161,19 @@
     
     UIView *parentView = parentController.view;
     
-    for (UIView *subview in [parentView subviews]) {
+    [self showInView:parentView];
+}
+
+- (void)showInView:(UIView *)view
+{
+    for (UIView *subview in [view subviews]) {
         if ([subview isKindOfClass:[OLGhostAlertView class]]) {
             OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subview;
             [otherOLGAV hide];
         }
     }
     
-    [parentView addSubview:self];
+    [view addSubview:self];
     
     self.visible = YES;
     

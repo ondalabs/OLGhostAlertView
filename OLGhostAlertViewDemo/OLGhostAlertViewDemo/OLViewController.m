@@ -36,11 +36,11 @@
         demo2.completionBlock = ^(void) {
             
             OLGhostAlertView *demo3 = [[OLGhostAlertView alloc] initWithTitle:@"Check out the code." message:@"Try out different setups before implementing it in your app."];
+            demo3.style = OLGhostAlertViewStyleDark;
             demo3.completionBlock = ^(void) {
                 
                 OLGhostAlertView *demo4 = [[OLGhostAlertView alloc] initWithTitle:@"Have fun!" message:@"You can tap this message to dismiss it." timeout:900.0 dismissible:YES];
                 demo4.position = OLGhostAlertViewPositionCenter;
-                demo4.style = OLGhostAlertViewStyleLight;
                 [demo4 show];
                 
             };
@@ -50,7 +50,7 @@
         [demo2 show];
         
     };
-    [demo show];
+    [demo showInView:self.view];
 }
 
 - (void)didReceiveMemoryWarning

@@ -25,6 +25,8 @@ Just like with UIAlertView, the dismissal of the view is handled by the view its
 
 OLGhostAlertView has to be `show`n in or after `viewDidAppear:` is invoked on the Root View Controller. If you attempt to call `show` before that, the instance may not be visible on the screen.
 
+As of version 1.7, you can have OLGhostAlertView show only within your view of choice by calling `showInView:` instead of `show`.
+
 ### Init methods
 
 
