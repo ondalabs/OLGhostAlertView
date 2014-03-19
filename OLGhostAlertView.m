@@ -343,8 +343,8 @@
     
     _style = style;
     
-    UIColor *backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
-    UIColor *textColor = [UIColor whiteColor];
+    UIColor *backgroundColor = nil;
+    UIColor *textColor = nil;
     
     if (style == OLGhostAlertViewStyleLight) {
         backgroundColor = [UIColor colorWithWhite:1 alpha:0.95];
