@@ -27,10 +27,11 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewStyle) {
 - (void)show;
 - (void)showInView:(UIView *)view;
 - (void)hide;
+- (void)hideOnTap;
 
 @property (nonatomic) OLGhostAlertViewPosition position;
 @property (nonatomic) OLGhostAlertViewStyle style;
-@property (nonatomic, copy) void (^completionBlock)(void);
+@property (nonatomic, copy) void (^completionBlock)(BOOL onTap);
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *message;
 @property (nonatomic) NSTimeInterval timeout;
