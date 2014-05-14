@@ -101,7 +101,7 @@
         else
             _bottomMargin = 50;
         
-        _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideOnTap)];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didChangeOrientation:)
@@ -195,7 +195,22 @@
         
         [self removeFromSuperview];
         
-        if (self.completionBlock) self.completionBlock();
+        if (self.completionBlock) self.completionBlock(NO);
+    }];
+}
+
+- (void)hideOnTap
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.alpha = 0;
+    } completion:^(BOOL finished){
+        self.visible = NO;
+        
+        [self removeFromSuperview];
+        
+        if (self.completionBlock) self.completionBlock(YES);
     }];
 }
 
