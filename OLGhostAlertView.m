@@ -201,6 +201,19 @@
 
 #pragma mark - View layout
 
+- (CGSize)calculateLabelSizeForText:(NSString *)text usingFont:(UIFont *)font restrictedToSize:(CGSize)constrainedSize {
+  
+  UILabel *gettingSizeLabel = [[UILabel alloc] init];
+  gettingSizeLabel.font = font;
+  gettingSizeLabel.text = text;
+  gettingSizeLabel.numberOfLines = 0;
+  CGSize maximumLabelSize = CGSizeMake(310, 9999);
+  
+  return [gettingSizeLabel sizeThatFits:maximumLabelSize];
+  
+}
+
+
 - (void)layoutSubviews
 {
     CGFloat maxWidth = 0;
@@ -222,12 +235,17 @@
     constrainedSize.width = maxWidth;
     constrainedSize.height = MAXFLOAT;
     
-    CGSize titleSize = [self.title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
+    CGSize titleSize = [self calculateLabelSizeForText:self.title
+                                             usingFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE]
+                                      restrictedToSize:constrainedSize];
+                                         
     CGSize messageSize = CGSizeZero;
     
     if (self.message) {
-        messageSize = [self.message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
-        
+       messageSize = [self calculateLabelSizeForText:self.message
+                                           usingFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE]
+                                    restrictedToSize:constrainedSize];
+
         totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
         
     } else {
