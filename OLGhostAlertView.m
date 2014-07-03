@@ -222,11 +222,11 @@
     constrainedSize.width = maxWidth;
     constrainedSize.height = MAXFLOAT;
     
-    CGSize titleSize = [self.title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
+    CGSize titleSize = [self.title sizeWithFont:self.titleLabel.font constrainedToSize:constrainedSize];
     CGSize messageSize = CGSizeZero;
     
     if (self.message) {
-        messageSize = [self.message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
+        messageSize = [self.message sizeWithFont:self.messageLabel.font constrainedToSize:constrainedSize];
         
         totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
         
@@ -357,6 +357,14 @@
     self.backgroundColor = backgroundColor;
     self.titleLabel.textColor = textColor;
     self.messageLabel.textColor = textColor;
+}
+
+- (void)setTitleFont:(UIFont *)font {
+    self.titleLabel.font = font;
+}
+
+- (void)setMessageFont:(UIFont *)font {
+    self.messageLabel.font = font;
 }
 
 #pragma mark - Cleanup
