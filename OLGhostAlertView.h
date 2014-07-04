@@ -27,6 +27,8 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewStyle) {
 - (void)show;
 - (void)showInView:(UIView *)view;
 - (void)hide;
+- (void)setTitleFont:(UIFont *)font;
+- (void)setMessageFont:(UIFont *)font;
 
 @property (nonatomic) OLGhostAlertViewPosition position;
 @property (nonatomic) OLGhostAlertViewStyle style;
@@ -37,4 +39,4 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewStyle) {
 @property (nonatomic) BOOL dismissible;
 @property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
-@end
+@end 
