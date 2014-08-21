@@ -50,7 +50,7 @@
         [demo2 show];
         
     };
-    [demo showInView:self.view];
+    [demo show];
 }
 
 - (void)didReceiveMemoryWarning
