@@ -18,6 +18,76 @@
 #define NSLineBreakByWordWrapping UILineBreakModeWordWrap
 #endif
 
+#pragma mark - OLGhostAlertWindow
+
+/*
+ OLGhostAlertWindow is a class that inherits from the UIWindow class. It is responsible for displaying an OLGhostAlertView above the application keyWindow. It has methods to show/hide alert above the application main window, which allows to be independent of the system keyboard.
+ */
+
+@interface OLGhostAlertWindow : UIWindow
+
+@property (nonatomic, weak) UIWindow *previousKeyWindow;
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController;
+- (void)show;
+- (void)hide;
+
+@end
+
+@implementation OLGhostAlertWindow
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController
+{
+    self = [super initWithFrame:[[UIScreen mainScreen] bounds]];
+    if (self) {
+        self.windowLevel = UIWindowLevelAlert-1.0;
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        self.backgroundColor = [UIColor clearColor];
+        self.rootViewController = rootViewController;
+    }
+    return self;
+}
+
+- (void)show
+{
+    self.previousKeyWindow = [[UIApplication sharedApplication] keyWindow];
+    [self makeKeyWindow];
+    self.userInteractionEnabled = YES;
+    
+    if (self.hidden) {
+        self.alpha = 0.0;
+        self.hidden = NO;
+    }
+    self.alpha = 1.0;
+}
+
+- (void)hide
+{
+    [[self previousKeyWindow] makeKeyWindow];
+    [self setPreviousKeyWindow:nil];
+    self.userInteractionEnabled = YES;
+    
+    self.alpha = 0.0;
+    self.hidden = YES;
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // if touch point lies at least inside one of the self.viewController.view.subviews, it will receive a touch
+    for (UIView *hitView in self.rootViewController.view.subviews) {
+        CGPoint hitPoint = [hitView convertPoint:point fromView:self];
+        if ([hitView pointInside:hitPoint withEvent:event]) {
+            return hitView;
+        }
+    }
+    return [self.previousKeyWindow hitTest:point withEvent:event];
+}
+
+@end
+
+#pragma mark - OLGhostAlertView
+
 @interface OLGhostAlertView ()
 
 @property (strong, nonatomic) UILabel *titleLabel;
@@ -25,9 +95,9 @@
 @property (strong, nonatomic) UITapGestureRecognizer *dismissTap;
 @property UIInterfaceOrientation interfaceOrientation;
 @property CGFloat bottomMargin;
-@property BOOL keyboardIsVisible;
-@property CGFloat keyboardHeight;
 @property (nonatomic, readwrite) BOOL visible;
+@property (nonatomic, strong) OLGhostAlertWindow *alertWindow;
+@property (nonatomic, readonly) UIViewController *viewController;
 
 @end
 
@@ -39,6 +109,10 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        UIViewController *viewController = [UIViewController new];
+        self.alertWindow = [[OLGhostAlertWindow alloc] initWithRootViewController:viewController];
+        viewController.view.backgroundColor = [UIColor clearColor];
+        
         self.layer.cornerRadius = 5.0f;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
         self.alpha = 0;
@@ -107,16 +181,6 @@
                                                  selector:@selector(didChangeOrientation:)
                                                      name:UIApplicationDidChangeStatusBarOrientationNotification
                                                    object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillShow:)
-                                                     name:UIKeyboardWillShowNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillHide:)
-                                                     name:UIKeyboardWillHideNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -154,18 +218,10 @@
     
     if (self.isVisible) return;
     
-    UIViewController *parentController = [[[UIApplication sharedApplication] delegate] window].rootViewController;
-
-    while (parentController.presentedViewController)
-        parentController = parentController.presentedViewController;
+    UIView *view = self.viewController.view;
     
-    UIView *parentView = parentController.view;
+    [self.alertWindow show];
     
-    [self showInView:parentView];
-}
-
-- (void)showInView:(UIView *)view
-{
     for (UIView *subview in [view subviews]) {
         if ([subview isKindOfClass:[OLGhostAlertView class]]) {
             OLGhostAlertView *otherOLGAV = (OLGhostAlertView *)subview;
@@ -184,6 +240,11 @@
     }];
 }
 
+- (void)showInView:(UIView *)view
+{
+    [self show];
+}
+
 - (void)hide
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
@@ -193,6 +254,7 @@
     } completion:^(BOOL finished){
         self.visible = NO;
         
+        [self.alertWindow hide];
         [self removeFromSuperview];
         
         if (self.completionBlock) self.completionBlock();
@@ -266,31 +328,10 @@
     
     self.frame = CGRectMake(xPosition, yPosition, ceilf(totalWidth), ceilf(totalHeight));
     
-    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom)
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
-    
     self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, ceilf(self.titleLabel.frame.origin.y), ceilf(totalLabelWidth), ceilf(titleSize.height));
     
     if (self.messageLabel) 
         self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, ceilf(titleSize.height) + floorf(VERTICAL_PADDING * 1.5), ceilf(totalLabelWidth), ceilf(messageSize.height));
-}
-
-- (void)keyboardWillShow:(NSNotification*)notification
-{
-    NSDictionary *keyboardInfo = [notification userInfo];
-    CGSize keyboardSize = [[keyboardInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    self.keyboardIsVisible = YES;
-    self.keyboardHeight = keyboardSize.height;
-    
-    [self setNeedsLayout];
-}
-
-- (void)keyboardWillHide:(NSNotification*)notification
-{
-    self.keyboardIsVisible = NO;
-    
-    [self setNeedsLayout];
 }
 
 #pragma mark - Orientation handling
@@ -357,6 +398,13 @@
     self.backgroundColor = backgroundColor;
     self.titleLabel.textColor = textColor;
     self.messageLabel.textColor = textColor;
+}
+
+#pragma mark - Helpers
+
+- (UIViewController *)viewController
+{
+    return self.alertWindow.rootViewController;
 }
 
 #pragma mark - Cleanup

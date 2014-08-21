@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, OLGhostAlertViewStyle) {
 - (id)initWithTitle:(NSString *)title message:(NSString *)message;
 - (id)initWithTitle:(NSString *)title message:(NSString *)message timeout:(NSTimeInterval)timeout dismissible:(BOOL)dismissible;
 - (void)show;
-- (void)showInView:(UIView *)view;
+- (void)showInView:(UIView *)view  __attribute__((deprecated("Use 'show' instead.")));
 - (void)hide;
 
 @property (nonatomic) OLGhostAlertViewPosition position;
