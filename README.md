@@ -38,16 +38,16 @@ Exposes all of the available options.
 
 ##### Parameters
 _title_  
-&nbsp;&nbsp;&nbsp;&nbsp;The string that appears in the view's title label. It is set in a bold, 17pt font.
+The string that appears in the view's title label.
 
 _message_  
-&nbsp;&nbsp;&nbsp;&nbsp;Descriptive text that provides more details than the title. Set in a regular, 15pt font. Can be `nil`.
+Descriptive text that provides more details than the title. Can be `nil`.
 
 _timeout_  
-&nbsp;&nbsp;&nbsp;&nbsp;Time interval before the alert is automatically dismissed. 
+Time interval before the alert is automatically dismissed. 
 
 _dismissible_  
-&nbsp;&nbsp;&nbsp;&nbsp;Whether the alert can be dismissed with a tap or not. 
+Whether the alert can be dismissed with a tap or not. 
 
 
 #### initWithTitle:message:
@@ -81,7 +81,7 @@ The visual style of the view.
 
 The view can have either light text on a dark background (`OLGhostAlertViewStyleDark`) or dark text over a light background (`OLGhostAlertViewStyleLight`). 
 
-The default value is `OLGhostAlertViewStyleDefault`, which maps to `OLGhostAlertViewStyleDark` in iOS 6 and `OLGhostAlertViewStyleLight` in iOS 7.
+The default value is `OLGhostAlertViewStyleDefault`, which maps to `OLGhostAlertViewStyleLight`.
 
 #### completionBlock
 A block to execute after the instance has been dismissed.
@@ -101,6 +101,26 @@ Descriptive text that provides more details than the title.
 	@property (nonatomic) NSString *message;
 	
 Setting this property after initialization recalculates the view's metrics.
+
+#### titleLabel
+The label that displays the title.
+
+	@property (nonatomic, strong) UILabel *titleLabel;
+
+#### messageLabel
+The label that displays the title.
+
+	@property (nonatomic, strong) UILabel *messageLabel;
+
+#### topContentMargin
+A margin that prevents the alert from drawing above it.
+
+	@property (nonatomic) CGFloat topContentMargin;
+
+#### bottomContentMargin
+A margin that prevents the alert from drawing below it.
+
+	@property (nonatomic) CGFloat bottomContentMargin;
 
 #### timeout
 Time interval before the alert is automatically dismissed.

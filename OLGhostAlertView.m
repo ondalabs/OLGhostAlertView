@@ -13,18 +13,11 @@
 #define TITLE_FONT_SIZE 17
 #define MESSAGE_FONT_SIZE 14
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-#define NSTextAlignmentCenter UITextAlignmentCenter
-#define NSLineBreakByWordWrapping UILineBreakModeWordWrap
-#endif
-
 @interface OLGhostAlertView ()
 
-@property (strong, nonatomic) UILabel *titleLabel;
-@property (strong, nonatomic) UILabel *messageLabel;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissTap;
 @property UIInterfaceOrientation interfaceOrientation;
-@property CGFloat bottomMargin;
+@property CGFloat innerMargin;
 @property BOOL keyboardIsVisible;
 @property CGFloat keyboardHeight;
 @property (nonatomic, readwrite) BOOL visible;
@@ -43,31 +36,24 @@
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
         self.alpha = 0;
         
-        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-            self.layer.shadowColor = [UIColor blackColor].CGColor;
-            self.layer.shadowOpacity = 0.7f;
-            self.layer.shadowRadius = 5.0f;
-            self.layer.shadowOffset = CGSizeMake(0, 2);
-        } else {
-            self.layer.shadowColor = [UIColor colorWithWhite:0 alpha:0.1].CGColor;
-            self.layer.shadowOffset = CGSizeMake(0, 0);
-            self.layer.shadowOpacity = 1.0;
-            self.layer.shadowRadius = 30.0;
-            
-            UIMotionEffectGroup *motionEffects = [UIMotionEffectGroup new];
-            
-            UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-            horizontalMotionEffect.minimumRelativeValue = @-21;
-            horizontalMotionEffect.maximumRelativeValue = @21;
-            
-            UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-            verticalMotionEffect.minimumRelativeValue = @-25;
-            verticalMotionEffect.maximumRelativeValue = @25;
-            
-            motionEffects.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
-            
-            [self addMotionEffect:motionEffects];
-        }
+        self.layer.shadowColor = [UIColor colorWithWhite:0 alpha:0.1].CGColor;
+        self.layer.shadowOffset = CGSizeMake(0, 0);
+        self.layer.shadowOpacity = 1.0;
+        self.layer.shadowRadius = 30.0;
+        
+        UIMotionEffectGroup *motionEffects = [UIMotionEffectGroup new];
+        
+        UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+        horizontalMotionEffect.minimumRelativeValue = @-21;
+        horizontalMotionEffect.maximumRelativeValue = @21;
+        
+        UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+        verticalMotionEffect.minimumRelativeValue = @-25;
+        verticalMotionEffect.maximumRelativeValue = @25;
+        
+        motionEffects.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
+        
+        [self addMotionEffect:motionEffects];
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, 0)];
         _titleLabel.backgroundColor = [UIColor clearColor];
@@ -97,9 +83,9 @@
         _interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            _bottomMargin = 25;
+            _innerMargin = 25;
         else
-            _bottomMargin = 50;
+            _innerMargin = 50;
         
         _dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
         
@@ -210,10 +196,7 @@
     CGRect screenRect = self.superview.bounds;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if (UIDeviceOrientationIsPortrait(self.interfaceOrientation))
-            maxWidth = 280 - (HORIZONTAL_PADDING * 2);
-        else
-            maxWidth = 420 - (HORIZONTAL_PADDING * 2);
+        maxWidth = self.superview.bounds.size.width - 40.0 - (HORIZONTAL_PADDING * 2);
     } else {
         maxWidth = 520 - (HORIZONTAL_PADDING * 2);
     }
@@ -222,11 +205,17 @@
     constrainedSize.width = maxWidth;
     constrainedSize.height = MAXFLOAT;
     
-    CGSize titleSize = [self.title sizeWithFont:[UIFont boldSystemFontOfSize:TITLE_FONT_SIZE] constrainedToSize:constrainedSize];
+    CGSize titleSize = [self.title boundingRectWithSize:constrainedSize
+                                                options:NSStringDrawingUsesLineFragmentOrigin
+                                             attributes:@{NSFontAttributeName: self.titleLabel.font}
+                                                context:nil].size;
     CGSize messageSize = CGSizeZero;
     
     if (self.message) {
-        messageSize = [self.message sizeWithFont:[UIFont systemFontOfSize:MESSAGE_FONT_SIZE] constrainedToSize:constrainedSize];
+        messageSize = [self.message boundingRectWithSize:constrainedSize
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:@{NSFontAttributeName: self.messageLabel.font}
+                                                 context:nil].size;
         
         totalHeight = titleSize.height + messageSize.height + floorf(VERTICAL_PADDING * 2.5);
         
@@ -234,14 +223,15 @@
         totalHeight = titleSize.height + floorf(VERTICAL_PADDING * 2);
     }
     
-    if (titleSize.width == maxWidth || messageSize.width == maxWidth)
+    if (titleSize.width == maxWidth || messageSize.width == maxWidth) {
         totalLabelWidth = maxWidth;
     
-    else if (messageSize.width > titleSize.width)
+    } else if (messageSize.width > titleSize.width) {
         totalLabelWidth = messageSize.width;
     
-    else
+    } else {
         totalLabelWidth = titleSize.width;
+    }
     
     CGFloat totalWidth = totalLabelWidth + (HORIZONTAL_PADDING * 2);
     
@@ -252,7 +242,7 @@
     switch (self.position) {
         case OLGhostAlertViewPositionBottom:
         default:
-            yPosition = screenRect.size.height - ceilf(totalHeight) - self.bottomMargin;
+            yPosition = screenRect.size.height - ceilf(totalHeight) - self.innerMargin - self.bottomContentMargin;
             break;
             
         case OLGhostAlertViewPositionCenter:
@@ -260,19 +250,21 @@
             break;
             
         case OLGhostAlertViewPositionTop:
-            yPosition = self.bottomMargin;
+            yPosition = self.innerMargin + self.topContentMargin;
             break;
     }
     
     self.frame = CGRectMake(xPosition, yPosition, ceilf(totalWidth), ceilf(totalHeight));
     
-    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom)
+    if (self.keyboardIsVisible && self.position == OLGhostAlertViewPositionBottom) {
         self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - self.keyboardHeight, self.frame.size.width, self.frame.size.height);
+    }
     
     self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, ceilf(self.titleLabel.frame.origin.y), ceilf(totalLabelWidth), ceilf(titleSize.height));
     
-    if (self.messageLabel) 
+    if (self.messageLabel) {
         self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, ceilf(titleSize.height) + floorf(VERTICAL_PADDING * 1.5), ceilf(totalLabelWidth), ceilf(messageSize.height));
+    }
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
@@ -326,20 +318,16 @@
 {
     _dismissible = dismissible;
     
-    if (dismissible)
+    if (dismissible) {
         [self addGestureRecognizer:self.dismissTap];
-    else
+    } else {
         if (self.gestureRecognizers) [self removeGestureRecognizer:self.dismissTap];
+    }
 }
 
 - (void)setStyle:(OLGhostAlertViewStyle)style
 {
-    OLGhostAlertViewStyle defaultStyle = OLGhostAlertViewStyleDark;
-    
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
-        defaultStyle = OLGhostAlertViewStyleLight;
-    
-    if (style == OLGhostAlertViewStyleDefault) style = defaultStyle;
+    if (style == OLGhostAlertViewStyleDefault) style = OLGhostAlertViewStyleLight;
     
     _style = style;
     
@@ -357,6 +345,18 @@
     self.backgroundColor = backgroundColor;
     self.titleLabel.textColor = textColor;
     self.messageLabel.textColor = textColor;
+}
+
+- (void)setTopContentMargin:(CGFloat)topContentMargin
+{
+    _topContentMargin = topContentMargin;
+    [self setNeedsLayout];
+}
+
+- (void)setBottomContentMargin:(CGFloat)bottomContentMargin
+{
+    _bottomContentMargin = bottomContentMargin;
+    [self setNeedsLayout];
 }
 
 #pragma mark - Cleanup

@@ -7,21 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C0A9A5C19C2437A0007FAA1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C0A9A5B19C2437A0007FAA1 /* Images.xcassets */; };
 		7CAA783716C1CF4C0088E893 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CAA783616C1CF4C0088E893 /* UIKit.framework */; };
 		7CAA783916C1CF4C0088E893 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CAA783816C1CF4C0088E893 /* Foundation.framework */; };
 		7CAA783B16C1CF4C0088E893 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CAA783A16C1CF4C0088E893 /* CoreGraphics.framework */; };
 		7CAA784116C1CF4C0088E893 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7CAA783F16C1CF4C0088E893 /* InfoPlist.strings */; };
 		7CAA784316C1CF4C0088E893 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA784216C1CF4C0088E893 /* main.m */; };
 		7CAA784716C1CF4C0088E893 /* OLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA784616C1CF4C0088E893 /* OLAppDelegate.m */; };
-		7CAA784916C1CF4C0088E893 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CAA784816C1CF4C0088E893 /* Default.png */; };
-		7CAA784B16C1CF4C0088E893 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CAA784A16C1CF4C0088E893 /* Default@2x.png */; };
-		7CAA784D16C1CF4C0088E893 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CAA784C16C1CF4C0088E893 /* Default-568h@2x.png */; };
 		7CAA785016C1CF4C0088E893 /* OLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA784F16C1CF4C0088E893 /* OLViewController.m */; };
 		7CAA785E16C1CF710088E893 /* OLGhostAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA785D16C1CF710088E893 /* OLGhostAlertView.m */; };
 		7CAA786016C1D33D0088E893 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CAA785F16C1D33D0088E893 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7C0A9A5B19C2437A0007FAA1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7CAA783316C1CF4C0088E893 /* OLGhostAlertViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OLGhostAlertViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CAA783616C1CF4C0088E893 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7CAA783816C1CF4C0088E893 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -32,9 +31,6 @@
 		7CAA784416C1CF4C0088E893 /* OLGhostAlertViewDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OLGhostAlertViewDemo-Prefix.pch"; sourceTree = "<group>"; };
 		7CAA784516C1CF4C0088E893 /* OLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OLAppDelegate.h; sourceTree = "<group>"; };
 		7CAA784616C1CF4C0088E893 /* OLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OLAppDelegate.m; sourceTree = "<group>"; };
-		7CAA784816C1CF4C0088E893 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		7CAA784A16C1CF4C0088E893 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		7CAA784C16C1CF4C0088E893 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		7CAA784E16C1CF4C0088E893 /* OLViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OLViewController.h; sourceTree = "<group>"; };
 		7CAA784F16C1CF4C0088E893 /* OLViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OLViewController.m; sourceTree = "<group>"; };
 		7CAA785C16C1CF710088E893 /* OLGhostAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OLGhostAlertView.h; path = ../../OLGhostAlertView.h; sourceTree = "<group>"; };
@@ -94,6 +90,7 @@
 				7CAA785D16C1CF710088E893 /* OLGhostAlertView.m */,
 				7CAA784E16C1CF4C0088E893 /* OLViewController.h */,
 				7CAA784F16C1CF4C0088E893 /* OLViewController.m */,
+				7C0A9A5B19C2437A0007FAA1 /* Images.xcassets */,
 				7CAA783D16C1CF4C0088E893 /* Supporting Files */,
 			);
 			path = OLGhostAlertViewDemo;
@@ -106,9 +103,6 @@
 				7CAA783F16C1CF4C0088E893 /* InfoPlist.strings */,
 				7CAA784216C1CF4C0088E893 /* main.m */,
 				7CAA784416C1CF4C0088E893 /* OLGhostAlertViewDemo-Prefix.pch */,
-				7CAA784816C1CF4C0088E893 /* Default.png */,
-				7CAA784A16C1CF4C0088E893 /* Default@2x.png */,
-				7CAA784C16C1CF4C0088E893 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -166,9 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CAA784116C1CF4C0088E893 /* InfoPlist.strings in Resources */,
-				7CAA784916C1CF4C0088E893 /* Default.png in Resources */,
-				7CAA784B16C1CF4C0088E893 /* Default@2x.png in Resources */,
-				7CAA784D16C1CF4C0088E893 /* Default-568h@2x.png in Resources */,
+				7C0A9A5C19C2437A0007FAA1 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,10 +253,12 @@
 		7CAA785A16C1CF4C0088E893 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OLGhostAlertViewDemo/OLGhostAlertViewDemo-Prefix.pch";
 				INFOPLIST_FILE = "OLGhostAlertViewDemo/OLGhostAlertViewDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -273,10 +267,12 @@
 		7CAA785B16C1CF4C0088E893 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OLGhostAlertViewDemo/OLGhostAlertViewDemo-Prefix.pch";
 				INFOPLIST_FILE = "OLGhostAlertViewDemo/OLGhostAlertViewDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

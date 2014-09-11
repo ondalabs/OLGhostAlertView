@@ -28,6 +28,7 @@
 {
     OLGhostAlertView *demo = [[OLGhostAlertView alloc] initWithTitle:@"Hi there." message:nil timeout:5.0 dismissible:NO];
     demo.position = OLGhostAlertViewPositionTop;
+    demo.topContentMargin = 64.0;
     demo.completionBlock = ^(void) {
         
         OLGhostAlertView *demo2 = [[OLGhostAlertView alloc] initWithTitle:@"This is a demo of OLGhostAlertView."];
@@ -36,7 +37,10 @@
         demo2.completionBlock = ^(void) {
             
             OLGhostAlertView *demo3 = [[OLGhostAlertView alloc] initWithTitle:@"Check out the code." message:@"Try out different setups before implementing it in your app."];
+            demo3.titleLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:19.0];
+            demo3.messageLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:14.0];
             demo3.style = OLGhostAlertViewStyleDark;
+            demo3.bottomContentMargin = 50.0;
             demo3.completionBlock = ^(void) {
                 
                 OLGhostAlertView *demo4 = [[OLGhostAlertView alloc] initWithTitle:@"Have fun!" message:@"You can tap this message to dismiss it." timeout:900.0 dismissible:YES];
