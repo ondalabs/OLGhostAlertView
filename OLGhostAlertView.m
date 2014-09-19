@@ -44,12 +44,12 @@
         UIMotionEffectGroup *motionEffects = [UIMotionEffectGroup new];
         
         UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-        horizontalMotionEffect.minimumRelativeValue = @-21;
-        horizontalMotionEffect.maximumRelativeValue = @21;
+        horizontalMotionEffect.minimumRelativeValue = @-14;
+        horizontalMotionEffect.maximumRelativeValue = @14;
         
         UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-        verticalMotionEffect.minimumRelativeValue = @-25;
-        verticalMotionEffect.maximumRelativeValue = @25;
+        verticalMotionEffect.minimumRelativeValue = @-18;
+        verticalMotionEffect.maximumRelativeValue = @18;
         
         motionEffects.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
         
@@ -338,7 +338,7 @@
         backgroundColor = [UIColor colorWithWhite:1 alpha:0.95];
         textColor = [UIColor blackColor];
     } else {
-        backgroundColor = [UIColor colorWithWhite:0 alpha:.45];
+        backgroundColor = [UIColor colorWithWhite:0 alpha:.75];
         textColor = [UIColor whiteColor];
     }
     
